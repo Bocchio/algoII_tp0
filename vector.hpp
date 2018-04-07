@@ -13,7 +13,6 @@ class Vector {
     static const size_t INIT_CHOP = 10;
     static const size_t CHOP_SIZE = 20;
 
-    //
     void resize(size_t new_size) {
         T *aux = new T[new_size];
         for (size_t i = 0; i < size; i++)

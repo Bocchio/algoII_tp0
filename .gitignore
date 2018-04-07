@@ -218,3 +218,12 @@ TSWLatexianTemp*
 
 # expex forward references with \gathertags
 *-tags.tex
+
+
+# files without extension
+*
+!/**/
+!*.*
+
+# ignore .o files
+*.o

@@ -16,7 +16,7 @@ class Dft{
 
             for(k=0; k<n; k++){
                 for(i=0; i<n; i++){
-                    wn=cos(2*k*i*M_PI/n)-sin(2*k*i*input[i].GetImag()*M_PI/n);
+                    wn=cos(2*k*i*M_PI/n)-sin(2*k*i*input[i].getImag()*M_PI/n);
                     c+=input[i]*wn;
                 }
                 b.append(c);
@@ -34,7 +34,7 @@ class Dft{
             n=input.getSize();
             for(k=0; k<n; k++){
                 for(i=0; i<n; i++){
-                    wn=cos(2*k*i*M_PI/n)+sin(2*k*i*input[i].GetImag()*M_PI/n);
+                    wn=cos(2*k*i*M_PI/n)+sin(2*k*i*input[i].getImag()*M_PI/n);
                     c+=input[i]*(wn/n);
                 }
                 b.append(c);

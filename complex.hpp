@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+using std::ostream;
+using std::istream;
+
 class Complex{
     double real, imag;
 
@@ -24,12 +27,12 @@ class Complex{
 
     ~Complex() {}
 
-    void setReal(double n) {
-        real = n;
+    void setReal(double new_value) {
+        real = new_value;
     }
 
-    void setImag(double n) {
-        imag = n;
+    void setImag(double new_value) {
+        imag = new_value;
     }
 
     double getReal() const {
@@ -40,40 +43,40 @@ class Complex{
         return imag;
     }
 
-    Complex& operator=(const Complex& a) {
-        real = a.real;
-        imag = a.imag;
+    Complex& operator=(const Complex& r) {
+        real = r.real;
+        imag = r.imag;
         return *this;
     }
 
-    Complex operator+(const Complex& a) {
-        return Complex(real+a.real, imag+a.imag);
+    Complex operator+(const Complex& r) {
+        return Complex(real + r.real, imag + r.imag);
     }
 
-    Complex operator-(const Complex& a) {
-        return Complex(real-a.real, imag-a.imag);
+    Complex operator-(const Complex& r) {
+        return Complex(real - r.real, imag - r.imag);
     }
 
-    Complex& operator+=(const Complex& a) {
-        real += a.real;
+    Complex& operator+=(const Complex& r) {
+        real += r.real;
         imag += imag;
         return *this;
     }
 
-    Complex operator*(const Complex& a) {
-        return Complex(a.real*real-imag + a.imag, real*a.imag + imag*a.real);
+    Complex operator*(const Complex& r) {
+        return Complex(r.real*real - imag + r.imag, real*r.imag + imag*r.real);
     }
 
-    Complex operator*(const double& d) {
-        return Complex(d*real, d*imag);
+    Complex operator*(const double& r) {
+        return Complex(r*real, r*imag);
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const Complex& c) {
+    friend ostream& operator<<(ostream& os, const Complex& c) {
         os << "(" << c.real << "," << c.imag << ")" << std::endl;
         return os;
     }
 
-    friend std::istream& operator>>(std::istream& is, Complex& c) {
+    friend istream& operator>>(istream& is, Complex& c) {
         bool good = false;
         bool bad = false;
         double real = 0;

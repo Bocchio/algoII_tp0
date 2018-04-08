@@ -89,18 +89,19 @@ class Complex{
                 good = true;
             else
                 bad = true;
-        }
-        else if (is.good()) {
+        } else if (is.good()) {
             is.putback(ch);
             if (is >> real)
                 good = true;
             else
                 bad = true;
         }
+
         if (good) {
             c.real = real;
             c.imag = imag;
         }
+
         if (bad) {
             is.clear(std::ios::badbit);
             return is;

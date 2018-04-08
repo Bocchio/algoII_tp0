@@ -80,29 +80,32 @@ class Complex{
         double imag = 0;
         char ch = 0;
 
-        if(is>>ch && ch=='('){
-            if(is>>real && is>> ch && ch==',' && is>>imag && is>>ch && ch==')')
+        if (is >> ch && ch == '(') {
+            if (is >>
+                real && is >>
+                ch && ch == ',' && is >>
+                imag && is >>
+                ch && ch == ')')
                 good = true;
             else
                 bad = true;
         }
-        else if(is.good()){
+        else if (is.good()) {
             is.putback(ch);
-            if(is>>real)
+            if (is >> real)
                 good = true;
             else
                 bad = true;
         }
-        if(good){
+        if (good) {
             c.real = real;
             c.imag = imag;
         }
-        if(bad){
+        if (bad) {
             is.clear(std::ios::badbit);
             return is;
         }
     }
-
 };
 
-#endif
+#endif  // COMPLEX_HPP__

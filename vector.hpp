@@ -5,6 +5,10 @@
 #include <stdexcept>  // For exceptions
 #include <utility>
 
+#define SEPARATOR ", "
+
+using std::ostream;
+
 template <typename T>
 class Vector {
     T *data;
@@ -30,12 +34,12 @@ class Vector {
     }
 
     Vector(const Vector& other) {
-        std::cout << "Copy constructor called." << std::endl;
+        // std::cout << "Copy constructor called." << std::endl;
         size = other.size;
         alloc_size = other.alloc_size;
         data = new T[alloc_size];
         for (size_t i = 0; i < size; i++) {
-            data[i] = other.data[i];
+            data[i] = other.data[i];  // Remember to prevent mutation
         }
     }
 
@@ -53,7 +57,7 @@ class Vector {
     }
 
     ~Vector() {
-        std::cout << "Delete called" << std::endl;
+        // std::cout << "Delete called" << std::endl;
         delete []data;
     }
 
@@ -63,7 +67,61 @@ class Vector {
         return data[pos];
     }
 
-    void append(const T &object) {
+    // Concatenates two vectors
+    Vector operator+(const Vector& r) {
+        Vector result;
+        for (size_t i = 0; i < size; i++)
+            result.append(data[i]);
+        for (size_t i = 0; i < r.size; i++)
+            result.append(r.data[i]);
+        return result;
+    }
+
+    // Multiplication element by element
+    Vector operator*(const Vector& r) {
+        if (size != r.size)
+            throw std::length_error("The two vectors have different sizes.");
+        Vector result;
+
+        for (size_t i = 0; i < size; i++)
+            result.append(data[i]*r.data[i]);
+
+        return result;
+    }
+
+    // Multiplication by a scalar
+    template <typename G>
+    Vector& operator*=(G r) {
+        for (size_t i = 0; i < size; i++)
+            data[i] *= r;
+        return *this;
+    }
+
+    // Division by a scalar
+    template <typename G>
+    Vector& operator/=(G r) {
+        for (size_t i = 0; i < size; i++)
+            data[i] /= r;
+        return *this;
+    }
+
+    // Multiplication by a scalar
+    template <typename G>
+    Vector& operator*(G r) {
+        for (size_t i = 0; i < size; i++)
+            data[i] *= r;
+        return *this;
+    }
+
+    // Division by a scalar
+    template <typename G>
+    Vector& operator/(G r) {
+        for (size_t i = 0; i < size; i++)
+            data[i] /= r;
+        return *this;
+    }
+
+    void append(const T& object) {
         if (size >= alloc_size)
             resize(alloc_size + CHOP_SIZE);
         data[size] = object;
@@ -93,9 +151,15 @@ class Vector {
     }
 
     Vector& operator=(Vector other) {
-        std::cout << "operator= called." << std::endl;
+        // std::cout << "operator= called." << std::endl;
         other.swap(*this);
         return *this;
+    }
+
+    friend ostream& operator<<(ostream& os, const Vector& r) {
+        for (size_t i = 0; i < r.size; i++)
+            os << r.data[i] << (i != r.size - 1 ? SEPARATOR : "");
+        return os;
     }
 
     size_t getSize() const {

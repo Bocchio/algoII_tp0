@@ -2,9 +2,11 @@
 #define COMPLEX_HPP__
 
 #include <iostream>
+#include <cmath>
 
 using std::ostream;
 using std::istream;
+using std::setprecision;
 
 class Complex{
     double real, imag;
@@ -43,36 +45,90 @@ class Complex{
         return imag;
     }
 
+    void setMod(double new_value) {
+        double factor = new_value/getMod();  // If modulus is 0, it'll raise an
+        imag *= factor;                      // exception
+        real *= factor;
+    }
+
+    void setArg(double new_value) {
+        double mod = getMod();
+        real = mod*cos(new_value);
+        imag = mod*sin(new_value);
+    }
+
+    double getMod() const {
+        return sqrt(imag*imag + real*real);
+    }
+
+    double getArg() const {
+        if (real > 0)
+            return atan(imag/real);
+        if (real < 0 && imag >= 0)
+            return atan(imag/real) + M_PI;
+        if (real < 0 && imag < 0)
+            return atan(imag/real) - M_PI;
+        if (real == 0 && imag > 0)
+            return M_PI_2;
+        if (real == 0 && imag < 0)
+            return -M_PI_2;
+        return 0;  // actually undefined
+    }
+
     Complex& operator=(const Complex& r) {
         real = r.real;
         imag = r.imag;
         return *this;
     }
 
-    Complex operator+(const Complex& r) {
+    Complex operator+(const Complex& r) const {
         return Complex(real + r.real, imag + r.imag);
     }
 
-    Complex operator-(const Complex& r) {
+    Complex operator-(const Complex& r) const {
         return Complex(real - r.real, imag - r.imag);
     }
 
     Complex& operator+=(const Complex& r) {
         real += r.real;
-        imag += imag;
+        imag += r.imag;
         return *this;
     }
 
-    Complex operator*(const Complex& r) {
+    Complex& operator/=(double r) {
+        real /= r;
+        imag /= r;
+        return *this;
+    }
+
+    Complex& operator*=(double r) {
+        real *= r;
+        imag *= r;
+        return *this;
+    }
+
+    Complex operator*(const Complex& r) const {
         return Complex(r.real*real - imag + r.imag, real*r.imag + imag*r.real);
     }
 
-    Complex operator*(const double& r) {
+    Complex operator*(double r) const {
         return Complex(r*real, r*imag);
     }
 
+    Complex operator^(long exponent) const {
+        double arg = getArg();
+        double mod = getMod();
+        mod = pow(mod, exponent);
+        arg = arg*exponent;
+        return Complex(mod*cos(arg), mod*sin(arg));
+    }
+
     friend ostream& operator<<(ostream& os, const Complex& c) {
-        os << "(" << c.real << "," << c.imag << ")" << std::endl;
+        os << "("
+           << c.real
+           << ","
+           << c.imag
+           << ")";
         return os;
     }
 

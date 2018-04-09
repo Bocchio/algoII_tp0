@@ -1,46 +1,84 @@
 #ifndef DFT_HPP__
 #define DFT_HPP__
+
 #include <cmath>
+#include <cfloat>  // For DBL_EPSILON
 #include "vector.hpp"
 #include "complex.hpp"
+#include "func_utils.hpp"
 
-class Dft{
-    public:
-        Vector<Complex> transform(const Vector<Complex>& input){
-            size_t i, k, n;
-            Vector<Complex> b;
-            double wn;
-            Complex c, c_nul;
+#define TOLERANCE DBL_EPSILON*5
 
-            n=input.getSize();
+class DFT {
 
-            for(k=0; k<n; k++){
-                for(i=0; i<n; i++){
-                    wn=cos(2*k*i*M_PI/n)-sin(2*k*i*input[i].getImag()*M_PI/n);
-                    c+=input[i]*wn;
-                }
-                b.append(c);
-                c=c_nul;
-            }
-            return b;
+    // Calculating the k-th element of the DFT is basically folding, so it's
+    // useful to think about it in those terms
+    class Fold {
+        long k;
+        Complex wn;
+     public:
+        Fold(Complex wn, long k) {
+            this->wn = wn;
+            this->k = k;
         }
 
-        Vector<Complex> inverse(const Vector<Complex>& input){
-            size_t i, k, n;
-            Complex c, c_nul;
-            Vector<Complex> b;
-            double wn;
-
-            n=input.getSize();
-            for(k=0; k<n; k++){
-                for(i=0; i<n; i++){
-                    wn=cos(2*k*i*M_PI/n)+sin(2*k*i*input[i].getImag()*M_PI/n);
-                    c+=input[i]*(wn/n);
-                }
-                b.append(c);
-                c=c_nul;
-            }
-            return b;
+        Complex operator()(const Complex& l, const Complex& r, size_t n) {
+            Complex result = l + r*(wn^(k*n));  // Should work
+            return result;
         }
+    };
+
+    // Calculating the DFT transform is basically applying a function to each
+    // element of the original vector, so it's useful to think about it
+    // in those terms
+    class Transform {
+        Complex wn;
+        Vector<Complex> x;
+     public:
+        Transform(const Vector<Complex>& x, bool inverse = false) {
+            double argument = -2*M_PI/x.getSize();
+            this->x = Vector<Complex>(x);
+
+            if (inverse) {
+                argument = -argument;
+                this->x /= x.getSize();
+            }
+            wn = Complex(cos(argument), sin(argument));
+        }
+
+        // Non-const reference here, Google's against it
+        void operator()(Complex& value, size_t k) {
+            Fold folder(wn, k);
+            value = reduce(folder, x, Complex(0, 0));
+
+            // But as floating point calculations bring certain mistakes
+            if (value.getReal() < TOLERANCE)
+                value.setReal(0);
+            if (value.getImag() < TOLERANCE)
+                value.setImag(0);
+        }
+    };
+
+
+
+ public:
+    static Vector<Complex> transform(const Vector<Complex>& x){
+        Vector<Complex> result = Vector<Complex>(x);
+
+        Transform dft_transform(result);
+        map(dft_transform, result);
+
+        return result;
+    }
+
+    static Vector<Complex> inverse(const Vector<Complex>& X){
+        Vector<Complex> result = Vector<Complex>(X);
+
+        Transform dft_inverse(result, true);
+        map(dft_inverse, result);
+
+        return result;
+    }
 };
-#endif
+
+#endif  // DFT_HPP_

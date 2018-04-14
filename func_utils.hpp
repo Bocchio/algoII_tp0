@@ -1,6 +1,8 @@
 #ifndef UTILS_HPP_
 #define UTILS_HPP_
 
+#include <functional>
+
 // // Some functional programming utilities
 // // Function pointer, container
 // template <typename T, typename F>
@@ -36,8 +38,8 @@ T filter(F f, T& object) {
 }
 
 // // Or fold, pretty useful
-// template <typename T, typename F, typename G>
-// G reduce(F f, T& object, G initializer = 0) {
+// template <typename T, typename G>
+// G reduce(std::function<G(G, G)> f, T& object, G initializer = 0) {
 //     G result = initializer;
 
 //     for (typename T::iterator it = object.begin(); it != object.end(); ++it)
@@ -46,50 +48,15 @@ T filter(F f, T& object) {
 //     return result;
 // }
 
-// // Index version, can't add the two templates with C++98
-// template <typename T, typename G>
-// G reduce(G (f)(G, G, size_t), T& object, G initializer = 0) {
-//     G result = initializer;
-
-//     for (typename T::iterator it = object.begin(); it != object.end(); ++it)
-//         result = f(result, *it, it - object.begin());  // Index might be useful
-
-//     return result;
-// }
-
-// Index version, can't add the two templates with C++98
+// Index version
 template <typename T, typename F, typename G>
 G reduce(F f, T& object, G initializer = 0) {
     G result = initializer;
 
     for (typename T::iterator it = object.begin(); it != object.end(); ++it)
-        result = f(result, *it, it - object.begin());  // Index might be useful
-
+        result = f(result, *it, it - object.begin());  // Passing the index
+                                                       // might be useful
     return result;
 }
-
-// template <typename Generator, T>
-// class InputIterator {
-//     Generator g;
-//     size_t i;
-//  public:
-//     InputIterator(Generator g, size_t i = 0) {
-//         this->g = g;
-//         this->i = i;
-//     }
-
-//     T operator*() {
-//         return g(i);
-//     }
-
-//     void operator++() {
-//         ++i;
-//     }
-
-//     T begin() {
-//         i = 0;
-//         return g(i);
-//     }
-// }
 
 #endif  // UTILS_HPP_

@@ -1,6 +1,11 @@
 #include <iostream>
 #include <iomanip>  // for std::setprecision
+#include <fstream>
+#include <sstream>
+#include <cstdlib>
 #include <cfloat>
+
+#include "cmdline.hpp"
 #include "vector.hpp"
 #include "complex.hpp"
 #include "dft.hpp"
@@ -8,95 +13,172 @@
 
 using std::cout;
 using std::endl;
+// Prueba de la clase cmdline: dado un factor entero pasado por la
+// línea de comando, leemos una secuencia de números que ingresan
+// por la entrada estándar, los multiplicamos por ese factor, y
+// luego mostramos el resultado por std::cout.
+//
+// $Id: main.cc,v 1.5 2012/09/15 12:23:57 lesanti Exp $
 
-void duppel(int &a) {
-    a *= 2;
-}
+static void opt_input(string const &);
+static void opt_output(string const &);
+static void opt_factor(string const &);
+static void opt_help(string const &);
 
-bool bigger(int &a) {
-    return a > 20 ? true : false;
-}
+// Tabla de opciones de línea de comando. El formato de la tabla
+// consta de un elemento por cada opción a definir. A su vez, en
+// cada entrada de la tabla tendremos:
+//
+// o La primera columna indica si la opción lleva (1) o no (0) un
+//   argumento adicional.
+//
+// o La segunda columna representa el nombre corto de la opción.
+//
+// o Similarmente, la tercera columna determina el nombre largo.
+//
+// o La cuarta columna contiene el valor por defecto a asignarle
+//   a esta opción en caso que no esté explícitamente presente
+//   en la línea de comandos del programa. Si la opción no tiene
+//   argumento (primera columna nula), todo esto no tiene efecto.
+//
+// o La quinta columna apunta al método de parseo de la opción,
+//   cuyo prototipo debe ser siempre void (*m)(string const &arg);
+//
+// o La última columna sirve para especificar el comportamiento a
+//   adoptar en el momento de procesar esta opción: cuando la
+//   opción es obligatoria, deberá activarse OPT_MANDATORY.
+//
+// Además, la última entrada de la tabla debe contener todos sus
+// elementos nulos, para indicar el final de la misma.
+//
+static option_t options[] = {
+    {1, "i", "input", "-", opt_input, OPT_DEFAULT},
+    {1, "o", "output", "-", opt_output, OPT_DEFAULT},
+    {1, "f", "factor", NULL, opt_factor, OPT_MANDATORY},
+    {0, "h", "help", NULL, opt_help, OPT_DEFAULT},
+    {0, },
+};
+static int factor;
+static istream *iss = 0;
+static ostream *oss = 0;
+static fstream ifs;
+static fstream ofs;
 
-int summer(int l, int r) {
-    return l + r;
-}
-
-int main()
+static void
+opt_input(string const &arg)
 {
-    Vector<int> a;
-    Vector<double> b;
-    Vector<int> c;
-    Vector<int> d;
-    int q = 87;
-    //a.append(5);
-    a.append(q);
-    a.append(7);
-    a.append(1);
-    a.append(2);
-    a.append(3);
-    a.append(4);
-    a.append(510);
-    a.append(72);
-    a.append(53);
-    a.append(74);
-    //a.append(56);
-    //a.append(77);
-    b = Vector<double>(a.begin(), a.end());
-    c = a;
-    a[0] = 10;
-    q = 78;
-    // for(size_t i = 0; i < b.getSize(); i++)
-    //    std::cout << b[i] << std::endl;
-    // //std::cout << b[1] << std::endl;
-    // //std::cout << b[9] << std::endl;
+    // Si el nombre del archivos es "-", usaremos la entrada
+    // estándar. De lo contrario, abrimos un archivo en modo
+    // de lectura.
+    //
+    if (arg == "-") {
+        iss = &cin;
+    } else {
+        ifs.open(arg.c_str(), ios::in);
+        iss = &ifs;
+    }
 
-    // std::cout << "----------" << std::endl;
+    // Verificamos que el stream este OK.
+    //
+    if (!iss->good()) {
+        cerr << "cannot open "
+             << arg
+             << "."
+             << endl;
+        exit(1);
+    }
+}
 
-    // for(size_t i = 0; i < a.getSize(); i++)
-    //    std::cout << a[i] << std::endl;
+static void
+opt_output(string const &arg)
+{
+    // Si el nombre del archivos es "-", usaremos la salida
+    // estándar. De lo contrario, abrimos un archivo en modo
+    // de escritura.
+    //
+    if (arg == "-") {
+        oss = &cout;
+    } else {
+        ofs.open(arg.c_str(), ios::out);
+        oss = &ofs;
+    }
 
-    // std::cout << "----------" << std::endl;
+    // Verificamos que el stream este OK.
+    //
+    if (!oss->good()) {
+        cerr << "cannot open "
+             << arg
+             << "."
+             << endl;
+        exit(1);
+    }
+}
 
-    // //for(size_t i = 0; i < c.getSize(); i++)
-    // //   std::cout << c[i] << std::endl;
-    // for(Vector<int>::iterator it = c.begin(); it != c.end(); it++)
-    //     std::cout << *it << std::endl;
+static void
+opt_factor(string const &arg)
+{
+    istringstream iss(arg);
 
-    cout << "a: " << a << endl;
-    cout << "c: " << c << endl;
-    //for(Vector<int>::iterator it = a.begin(); it != a.end(); it++)
-    //    c.append(*it);
-    cout << "c: " << c << endl;
-    cout << a + c << endl;
-    d = a + c;
-    a[0] = -1;
-    cout << "d: " << d << endl;
-    // cout << "bigger than 20: " << filter(bigger, d) << endl;
-    // map(duppel, d);
-    // cout << "d: " << d.getSize() << endl;
-    // cout << "d: " << reduce(summer, d, 0) << endl;
+    // Intentamos extraer el factor de la línea de comandos.
+    // Para detectar argumentos que únicamente consistan de
+    // números enteros, vamos a verificar que EOF llegue justo
+    // después de la lectura exitosa del escalar.
+    //
+    if (!(iss >> factor)
+        || !iss.eof()) {
+        cerr << "non-integer factor: "
+             << arg
+             << "."
+             << endl;
+        exit(1);
+    }
 
-    Vector<Complex> dft;
-    // dft.append(Complex(0, 0));
-    // dft.append(Complex(0, 0));
-    // dft.append(Complex(2, 0));
-    // dft.append(Complex(3, 0));
-    // dft.append(Complex(4, 0));
-    // dft.append(Complex(0, 0));
-    // dft.append(Complex(0, 0));
-    // dft.append(Complex(0, 0));
-    dft.append(Complex(1, 0));
-    dft.append(Complex(1, 0));
-    dft.append(Complex(1, 0));
-    dft.append(Complex(1, 0));
-    cout << dft << endl;
-    cout << DFT::transform(dft) << endl;
-    // double argument = -2*M_PI/10;
-    // Complex wn(cos(argument), sin(argument));
-    // cout << (wn^3) << endl;
-    Vector<Complex> result = DFT::transform(dft);
-    cout << result << endl;
-    cout << DFT::inverse(result) << endl;
+    if (iss.bad()) {
+        cerr << "cannot read integer factor."
+             << endl;
+        exit(1);
+    }
+}
 
-    return 0;
+static void
+opt_help(string const &arg)
+{
+    cout << "cmdline -f factor [-i file] [-o file]"
+         << endl;
+    exit(0);
+}
+
+void
+multiply(istream *is, ostream *os)
+{
+    int num;
+
+    while (*is >> num) {
+        *os << num * factor
+            << "\n";
+    }
+
+    if (os->bad()) {
+        cerr << "cannot write to output stream."
+             << endl;
+        exit(1);
+    }
+    if (is->bad()) {
+        cerr << "cannot read from input stream."
+             << endl;
+        exit(1);
+    }
+    if (!is->eof()) {
+        cerr << "cannot find EOF on input stream."
+             << endl;
+        exit(1);
+    }
+}
+
+int
+main(int argc, char * const argv[])
+{
+    cmdline cmdl(options);
+    cmdl.parse(argc, argv);
+    multiply(iss, oss);
 }

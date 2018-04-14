@@ -1,11 +1,10 @@
 #ifndef DFT_HPP__
 #define DFT_HPP__
 
-#include <cmath>
 #include <cfloat>  // For DBL_EPSILON
 #include "vector.hpp"
 #include "complex.hpp"
-#include "func_utils.hpp"
+#include "func_utils.hpp"  // Because functional programming is fun
 
 #define TOLERANCE DBL_EPSILON*5
 
@@ -35,6 +34,7 @@ class DFT {
         Complex wn;
         Vector<Complex> x;
      public:
+        // Control coupling :( at least the default value makes it a little better
         Transform(const Vector<Complex>& x, bool inverse = false) {
             double argument = -2*M_PI/x.getSize();
             this->x = Vector<Complex>(x);
@@ -58,8 +58,6 @@ class DFT {
                 value.setImag(0);
         }
     };
-
-
 
  public:
     static Vector<Complex> transform(const Vector<Complex>& x){

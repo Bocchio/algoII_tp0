@@ -124,7 +124,7 @@ class Vector {
     void append(const T& object) {
         if (size >= alloc_size)
             resize(alloc_size + CHOP_SIZE);
-        data[size] = object;
+        data[size] = T(object);  // puts a copy inside
         size++;
     }
 
@@ -157,9 +157,21 @@ class Vector {
     }
 
     friend ostream& operator<<(ostream& os, const Vector& r) {
-        for (size_t i = 0; i < r.size; i++)
-            os << r.data[i] << (i != r.size - 1 ? SEPARATOR : "");
+        for (size_t i = 0; i < r.size; ++i)
+            os << r.data[i];
         return os;
+    }
+
+    friend istream& operator>>(istream& is, Complex& r) {
+        for (size_t i = 0; i < r.size; ++i) {
+            Complex complex();
+            if (is >> complex)
+                r.append(complex);
+            else
+                break;
+        }
+
+        return is;
     }
 
     size_t getSize() const {

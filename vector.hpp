@@ -8,6 +8,7 @@
 #define SEPARATOR ", "
 
 using std::ostream;
+using std::istream;
 
 template <typename T>
 class Vector {
@@ -162,14 +163,9 @@ class Vector {
         return os;
     }
 
-    friend istream& operator>>(istream& is, Complex& r) {
-        for (size_t i = 0; i < r.size; ++i) {
-            Complex complex();
-            if (is >> complex)
-                r.append(complex);
-            else
-                break;
-        }
+    friend istream& operator>>(istream& is, Vector& r) {
+        for (T t; is >> t;)
+            r.append(t);
 
         return is;
     }

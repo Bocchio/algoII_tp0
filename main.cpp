@@ -4,6 +4,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <cfloat>
+#include <string>
 
 #include "cmdline.hpp"
 #include "vector.hpp"
@@ -12,7 +13,13 @@
 #include "func_utils.hpp"
 
 using std::cout;
+using std::cin;
+using std::cerr;
 using std::endl;
+using std::fstream;
+using std::ios;
+using std::istringstream;
+using std::string;
 // Prueba de la clase cmdline: dado un factor entero pasado por la
 // línea de comando, leemos una secuencia de números que ingresan
 // por la entrada estándar, los multiplicamos por ese factor, y
@@ -175,10 +182,15 @@ multiply(istream *is, ostream *os)
     }
 }
 
-int
-main(int argc, char * const argv[])
+int main(int argc, char * const argv[])
 {
-    cmdline cmdl(options);
-    cmdl.parse(argc, argv);
-    multiply(iss, oss);
+    // cmdline cmdl(options);
+    // cmdl.parse(argc, argv);
+    // multiply(iss, oss);
+
+    Vector<Complex> v;
+    cin >> v;
+    cout << v << endl;
+
+    return 0;
 }

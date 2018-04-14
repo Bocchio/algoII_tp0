@@ -163,8 +163,9 @@ class Complex{
 
         if (bad) {
             is.clear(std::ios::badbit);
-            return is;
         }
+
+        return is;
     }
 };
 

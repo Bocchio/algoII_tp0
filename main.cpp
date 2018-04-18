@@ -20,16 +20,10 @@ using std::fstream;
 using std::ios;
 using std::istringstream;
 using std::string;
-// Prueba de la clase cmdline: dado un factor entero pasado por la
-// línea de comando, leemos una secuencia de números que ingresan
-// por la entrada estándar, los multiplicamos por ese factor, y
-// luego mostramos el resultado por std::cout.
-//
-// $Id: main.cc,v 1.5 2012/09/15 12:23:57 lesanti Exp $
 
 static void opt_input(string const &);
 static void opt_output(string const &);
-static void opt_factor(string const &);
+static void opt_method(string const &);
 static void opt_help(string const &);
 
 // Tabla de opciones de línea de comando. El formato de la tabla
@@ -58,26 +52,31 @@ static void opt_help(string const &);
 // Además, la última entrada de la tabla debe contener todos sus
 // elementos nulos, para indicar el final de la misma.
 //
+// syntax: {needs argument,
+//          short name,
+//          long name,
+//          default value,
+//          parser,
+//          flag}
+//
 static option_t options[] = {
     {1, "i", "input", "-", opt_input, OPT_DEFAULT},
     {1, "o", "output", "-", opt_output, OPT_DEFAULT},
-    {1, "f", "factor", NULL, opt_factor, OPT_MANDATORY},
+    {1, "m", "method", "DFT", opt_method, OPT_DEFAULT},
     {0, "h", "help", NULL, opt_help, OPT_DEFAULT},
     {0, },
 };
-static int factor;
+
 static istream *iss = 0;
 static ostream *oss = 0;
+typedef Vector<Complex> (* transform_method)(const Vector<Complex> &v);
+static transform_method transform;
 static fstream ifs;
 static fstream ofs;
 
-static void
-opt_input(string const &arg)
+
+static void opt_input(string const &arg)
 {
-    // Si el nombre del archivos es "-", usaremos la entrada
-    // estándar. De lo contrario, abrimos un archivo en modo
-    // de lectura.
-    //
     if (arg == "-") {
         iss = &cin;
     } else {
@@ -85,10 +84,8 @@ opt_input(string const &arg)
         iss = &ifs;
     }
 
-    // Verificamos que el stream este OK.
-    //
     if (!iss->good()) {
-        cerr << "cannot open "
+        cerr << "Cannot open "
              << arg
              << "."
              << endl;
@@ -96,13 +93,8 @@ opt_input(string const &arg)
     }
 }
 
-static void
-opt_output(string const &arg)
+static void opt_output(string const &arg)
 {
-    // Si el nombre del archivos es "-", usaremos la salida
-    // estándar. De lo contrario, abrimos un archivo en modo
-    // de escritura.
-    //
     if (arg == "-") {
         oss = &cout;
     } else {
@@ -110,10 +102,8 @@ opt_output(string const &arg)
         oss = &ofs;
     }
 
-    // Verificamos que el stream este OK.
-    //
     if (!oss->good()) {
-        cerr << "cannot open "
+        cerr << "Cannot open "
              << arg
              << "."
              << endl;
@@ -121,76 +111,35 @@ opt_output(string const &arg)
     }
 }
 
-static void
-opt_factor(string const &arg)
+static void opt_method(string const &method)
 {
-    istringstream iss(arg);
-
-    // Intentamos extraer el factor de la línea de comandos.
-    // Para detectar argumentos que únicamente consistan de
-    // números enteros, vamos a verificar que EOF llegue justo
-    // después de la lectura exitosa del escalar.
-    //
-    if (!(iss >> factor)
-        || !iss.eof()) {
-        cerr << "non-integer factor: "
-             << arg
-             << "."
-             << endl;
-        exit(1);
-    }
-
-    if (iss.bad()) {
-        cerr << "cannot read integer factor."
-             << endl;
-        exit(1);
+    if (method == "DFT")
+        transform = DFT::transform;
+    else if (method == "IDFT")
+        transform = DFT::inverse;
+    else {
+        cerr << "Unkown mehotd." << endl;
+        opt_help("");
     }
 }
 
-static void
-opt_help(string const &arg)
+static void opt_help(string const &arg)
 {
-    cout << "cmdline -f factor [-i file] [-o file]"
+    cout << "cmdline [-i file] [-o file] [-m method]"
          << endl;
     exit(0);
 }
 
-void
-multiply(istream *is, ostream *os)
-{
-    int num;
-
-    while (*is >> num) {
-        *os << num * factor
-            << "\n";
-    }
-
-    if (os->bad()) {
-        cerr << "cannot write to output stream."
-             << endl;
-        exit(1);
-    }
-    if (is->bad()) {
-        cerr << "cannot read from input stream."
-             << endl;
-        exit(1);
-    }
-    if (!is->eof()) {
-        cerr << "cannot find EOF on input stream."
-             << endl;
-        exit(1);
-    }
-}
-
 int main(int argc, char * const argv[])
 {
-    // cmdline cmdl(options);
-    // cmdl.parse(argc, argv);
-    // multiply(iss, oss);
+    cmdline cmdl(options);
+    cmdl.parse(argc, argv);
 
     Vector<Complex> v;
-    cin >> v;
-    cout << v << endl;
+    if((*iss >> v).bad()){
+        cerr << "The input data was corrupt." << endl;
+    }
+    *oss << transform(v) << endl;
 
     return 0;
 }

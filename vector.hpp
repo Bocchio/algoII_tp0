@@ -3,7 +3,7 @@
 
 #include <cstddef>  // Needed for size_t
 #include <stdexcept>  // For exceptions
-#include <utility>
+#include <iostream>  // for stream manipulation
 
 #define SEPARATOR ", "
 
@@ -164,9 +164,9 @@ class Vector {
     }
 
     friend istream& operator>>(istream& is, Vector& r) {
-        for (T t; is >> t;)
+        for (T t; is >> t;) {
             r.append(t);
-
+        }
         return is;
     }
 

@@ -4,9 +4,10 @@
 #include <iostream>
 #include <cmath>
 
+using std::cout;
+using std::endl;
 using std::ostream;
 using std::istream;
-using std::setprecision;
 
 class Complex{
     double real, imag;
@@ -133,35 +134,29 @@ class Complex{
     }
 
     friend istream& operator>>(istream& is, Complex& c) {
-        bool good = false;
-        bool bad = false;
+        bool good = true;
         double real = 0;
         double imag = 0;
         char ch = 0;
 
         if (is >> ch && ch == '(') {
-            if (is >>
-                real && is >>
-                ch && ch == ',' && is >>
-                imag && is >>
-                ch && ch == ')')
+            if (is >> real &&
+                is >> ch && ch == ',' &&
+                is >> imag &&
+                is >> ch && ch == ')')
                 good = true;
             else
-                bad = true;
-        } else if (is.good()) {
+                good = false;
+        } else if (is.good()) {  // read single real
             is.putback(ch);
-            if (is >> real)
-                good = true;
-            else
-                bad = true;
+            good = (is >> real) ? true : false;
         }
 
         if (good) {
             c.real = real;
             c.imag = imag;
         }
-
-        if (bad) {
+        else {
             is.clear(std::ios::badbit);
         }
 

@@ -5,10 +5,12 @@
 #include <string>
 #include <cstdlib>
 #include <iostream>
-#include <cmdline.hpp>
+#include "cmdline.hpp"
 
 using std::cerr;
 using std::cout;
+using std::endl;
+using std::string;
 
 cmdline::cmdline() {
 }

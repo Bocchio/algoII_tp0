@@ -8,8 +8,8 @@
 
 #include "cmdline.hpp"
 #include "vector.hpp"
-#include "complex.hpp"
-//#include "func_version/dft.hpp"
+//#include "complex.hpp"
+#include "func_version/dft.hpp"
 #include "dft.hpp"
 
 using std::cout;

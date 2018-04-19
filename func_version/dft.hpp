@@ -6,7 +6,7 @@
 #include "../complex.hpp"
 #include "func_utils.hpp"  // Because functional programming is fun
 
-#define TOLERANCE DBL_EPSILON*5
+#define TOLERANCE DBL_EPSILON*20
 
 class DFT {
 

@@ -1,6 +1,14 @@
 CXX = g++
 CPPFLAGS = -std=c++98 -Wall -pedantic-errors
 
+all: main diff_complex
+
+diff_complex: diff_complex.o cmdline.o vector.hpp complex.hpp
+	$(CXX) $^ -o $@
+
+diff_complex.o: diff_complex.cpp vector.hpp complex.hpp
+	$(CXX) -c $< -o $@
+
 main: main.o cmdline.o vector.hpp complex.hpp dft.hpp
 	$(CXX) $^ -o $@
 

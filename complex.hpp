@@ -9,6 +9,8 @@ using std::endl;
 using std::ostream;
 using std::istream;
 
+#define COMPLEX_TOLERANCE 1E-6
+
 class Complex{
     double real, imag;
 
@@ -126,6 +128,17 @@ class Complex{
         mod = pow(mod, exponent);
         arg = arg*exponent;
         return Complex(mod*cos(arg), mod*sin(arg));
+    }
+
+    bool operator==(const Complex& r) const {
+        Complex temp(real-r.real, imag-r.imag);
+        if (temp.getMod() < COMPLEX_TOLERANCE)
+            return true;
+        return false;
+    }
+
+    bool operator!=(const Complex& r) const {
+        return !(*this == r);
     }
 
     friend ostream& operator<<(ostream& os, const Complex& c) {

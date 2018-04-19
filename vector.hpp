@@ -122,13 +122,17 @@ class Vector {
         return *this;
     }
 
-    bool operator==(const Vector& r) {
+    bool operator==(const Vector& r) const {
         if (size != r.size)
             return false;
         for(size_t i = 0; i < size; ++i)
             if (data[i] != r.data[i])
                 return false;
         return true;
+    }
+
+    bool operator!=(const Vector& r) const {
+        return !(*this == r);
     }
 
     void append(const T& object) {

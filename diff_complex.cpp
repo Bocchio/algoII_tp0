@@ -20,9 +20,9 @@ using std::ios;
 using std::istringstream;
 using std::string;
 
-static void opt_input(string const &);
-static void opt_output(string const &);
-static void opt_method(string const &);
+static void opt_input1(string const &);
+static void opt_input2(string const &);
+static void opt_verbose(string const &);
 static void opt_help(string const &);
 
 // syntax: {needs argument,
@@ -35,6 +35,7 @@ static void opt_help(string const &);
 static option_t options[] = {
     {1, "i1", "input1", "-", opt_input1, OPT_DEFAULT},
     {1, "i2", "input2", "-", opt_input2, OPT_DEFAULT},
+    {0, "v", "verbose", NULL, opt_verbose, OPT_DEFAULT},
     {0, },
 };
 
@@ -42,18 +43,19 @@ static istream *iss1 = 0;
 static istream *iss2 = 0;
 static fstream ifs1;
 static fstream ifs2;
+static bool verbose = false;
 
 
 static void opt_input1(string const &arg)
 {
     if (arg == "-") {
-        iss = &cin;
+        iss1 = &cin;
     } else {
         ifs1.open(arg.c_str(), ios::in);
-        iss = &ifs1;
+        iss1 = &ifs1;
     }
 
-    if (!iss->good()) {
+    if (!iss1->good()) {
         cerr << ERROR_MSG_CANT_OPEN_FILE
              << arg
              << "."
@@ -65,19 +67,24 @@ static void opt_input1(string const &arg)
 static void opt_input2(string const &arg)
 {
     if (arg == "-") {
-        iss = &cin;
+        iss2 = &cin;
     } else {
         ifs2.open(arg.c_str(), ios::in);
-        iss = &ifs2;
+        iss2 = &ifs2;
     }
 
-    if (!iss->good()) {
+    if (!iss2->good()) {
         cerr << ERROR_MSG_CANT_OPEN_FILE
              << arg
              << "."
              << endl;
         exit(1);
     }
+}
+
+static void opt_verbose(string const &arg)
+{
+    verbose = true;
 }
 
 int main(int argc, char * const argv[])
@@ -92,8 +99,15 @@ int main(int argc, char * const argv[])
     if((*iss2 >> v2).bad()){
         cerr << ERROR_MSG_CORRUPTED_DATA << endl;
     }
-    if(v1 != v2)
+    if(v1 != v2){
+        if (verbose)
+            cout << "Distintos." << endl;
         exit(1);
+    }
+
+    if (verbose) {
+        cout << "Iguales." << endl;
+    }
 
     return 0;
 }

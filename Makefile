@@ -9,7 +9,7 @@ diff_complex: diff_complex.o cmdline.o vector.hpp complex.hpp
 diff_complex.o: diff_complex.cpp vector.hpp complex.hpp
 	$(CXX) -c $< -o $@
 
-main: main.o cmdline.o vector.hpp complex.hpp dft.hpp
+tp0: main.o cmdline.o vector.hpp complex.hpp dft.hpp
 	$(CXX) $^ -o $@
 
 cmdline.o: cmdline.cpp

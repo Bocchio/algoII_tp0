@@ -9,7 +9,7 @@ using std::endl;
 using std::ostream;
 using std::istream;
 
-#define COMPLEX_TOLERANCE 1E-6
+#define COMPLEX_TOLERANCE 1E-4
 
 class Complex{
     double real, imag;

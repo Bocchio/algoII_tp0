@@ -43,7 +43,7 @@ cmdline::parse(int argc, char * const argv[]) {
         // parámetro no-opción es un error.
         //
         if (argv[i][0] != '-') {
-            cerr << ERROR_MSJ_INVALID_ARG
+            cerr << ERROR_MSG_INVALID_ARG
             << argv[i]
             << endl;
             exit(1);
@@ -79,7 +79,7 @@ cmdline::parse(int argc, char * const argv[]) {
         if (op->flags & OPT_MANDATORY) {
             cerr << "-"
             << OPTION_NAME(op)
-            << ERROR_MSJ_MANDATORY_OPT
+            << ERROR_MSG_MANDATORY_OPT
             << "\n";
             exit(1);
         }
@@ -110,7 +110,7 @@ int cmdline::do_long_opt(const char *opt, const char *arg) {
                 // el mismo haya sido provisto.
                 //
                 if (arg == 0) {
-                    cerr << ERROR_MSJ_OPT_REQ_ARG
+                    cerr << ERROR_MSG_OPT_REQ_ARG
                     << "--"
                     << opt
                     << "\n";
@@ -130,7 +130,7 @@ int cmdline::do_long_opt(const char *opt, const char *arg) {
     // Error: opción no reconocida. Imprimimos un mensaje
     // de error, y finalizamos la ejecución del programa.
     //
-    cerr << ERROR_MSJ_UNKNOWN_OPT
+    cerr << ERROR_MSG_UNKNOWN_OPT
     << "--"
     << opt
     << "."
@@ -167,7 +167,7 @@ int cmdline::do_short_opt(const char *opt, const char *arg) {
                 // el mismo haya sido provisto.
                 //
                 if (arg == 0) {
-                    cerr << ERROR_MSJ_OPT_REQ_ARG
+                    cerr << ERROR_MSG_OPT_REQ_ARG
                     << "-"
                     << opt
                     << "\n";
@@ -187,7 +187,7 @@ int cmdline::do_short_opt(const char *opt, const char *arg) {
     // Error: opción no reconocida. Imprimimos un mensaje
     // de error, y finalizamos la ejecución del programa.
     //
-    cerr << ERROR_MSJ_UNKNOWN_OPT
+    cerr << ERROR_MSG_UNKNOWN_OPT
     << "-"
     << opt
     << "."

@@ -9,8 +9,6 @@
 #include "cmdline.hpp"
 #include "vector.hpp"
 #include "complex.hpp"
-//#include "func_version/dft.hpp"
-#include "dft.hpp"
 #include "errors.hpp"
 
 using std::cout;
@@ -35,28 +33,24 @@ static void opt_help(string const &);
 //          flag}
 //
 static option_t options[] = {
-    {1, "i", "input", "-", opt_input, OPT_DEFAULT},
-    {1, "o", "output", "-", opt_output, OPT_DEFAULT},
-    {1, "m", "method", "DFT", opt_method, OPT_DEFAULT},
-    {0, "h", "help", NULL, opt_help, OPT_DEFAULT},
+    {1, "i1", "input1", "-", opt_input1, OPT_DEFAULT},
+    {1, "i2", "input2", "-", opt_input2, OPT_DEFAULT},
     {0, },
 };
 
-static istream *iss = 0;
-static ostream *oss = 0;
-typedef Vector<Complex> (* transform_method)(const Vector<Complex> &v);
-static transform_method transform;
-static fstream ifs;
-static fstream ofs;
+static istream *iss1 = 0;
+static istream *iss2 = 0;
+static fstream ifs1;
+static fstream ifs2;
 
 
-static void opt_input(string const &arg)
+static void opt_input1(string const &arg)
 {
     if (arg == "-") {
         iss = &cin;
     } else {
-        ifs.open(arg.c_str(), ios::in);
-        iss = &ifs;
+        ifs1.open(arg.c_str(), ios::in);
+        iss = &ifs1;
     }
 
     if (!iss->good()) {
@@ -68,16 +62,16 @@ static void opt_input(string const &arg)
     }
 }
 
-static void opt_output(string const &arg)
+static void opt_input2(string const &arg)
 {
     if (arg == "-") {
-        oss = &cout;
+        iss = &cin;
     } else {
-        ofs.open(arg.c_str(), ios::out);
-        oss = &ofs;
+        ifs2.open(arg.c_str(), ios::in);
+        iss = &ifs2;
     }
 
-    if (!oss->good()) {
+    if (!iss->good()) {
         cerr << ERROR_MSG_CANT_OPEN_FILE
              << arg
              << "."
@@ -86,35 +80,20 @@ static void opt_output(string const &arg)
     }
 }
 
-static void opt_method(string const &method)
-{
-    if (method == "DFT")
-        transform = DFT::transform;
-    else if (method == "IDFT")
-        transform = DFT::inverse;
-    else {
-        cerr << ERROR_MSG_UNKNOWN_METHOD << endl;
-        opt_help("");
-    }
-}
-
-static void opt_help(string const &arg)
-{
-    cout << HELP_MSG
-         << endl;
-    exit(0);
-}
-
 int main(int argc, char * const argv[])
 {
     cmdline cmdl(options);
     cmdl.parse(argc, argv);
 
-    Vector<Complex> v;
-    if((*iss >> v).bad()){
+    Vector<Complex> v1, v2;
+    if((*iss1 >> v1).bad()){
         cerr << ERROR_MSG_CORRUPTED_DATA << endl;
     }
-    *oss << transform(v) << endl;
+    if((*iss2 >> v2).bad()){
+        cerr << ERROR_MSG_CORRUPTED_DATA << endl;
+    }
+    if(v1 != v2)
+        exit(1);
 
     return 0;
 }

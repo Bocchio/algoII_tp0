@@ -122,6 +122,15 @@ class Vector {
         return *this;
     }
 
+    bool operator==(const Vector& r) {
+        if (size != r.size)
+            return false;
+        for(size_t i = 0; i < size; ++i)
+            if (data[i] != r.data[i])
+                return false;
+        return true;
+    }
+
     void append(const T& object) {
         if (size >= alloc_size)
             resize(alloc_size + CHOP_SIZE);

@@ -224,6 +224,8 @@ TSWLatexianTemp*
 *
 !/**/
 !*.*
+!makefile
+!Makefile
 
 # ignore .o files
 *.o

@@ -2,6 +2,7 @@
 #define DFT_HPP__
 
 #include <cfloat>  // For DBL_EPSILON
+#include <cmath>
 #include <iostream>
 #include "vector.hpp"
 #include "complex.hpp"
@@ -18,10 +19,10 @@ class DFT {
         double argument = -(2*M_PI)/N;
         Complex wn(cos(argument), sin(argument));
         for(Vector<Complex>::iterator yi = y.begin(); yi != y.end(); ++yi){
-            size_t i = y.begin() - yi;
+            size_t i = yi - y.begin();
             *yi = Complex();
             for(Vector<Complex>::iterator xj = x.begin(); xj != x.end(); ++xj){
-                size_t j = x.begin() - xj;
+                size_t j = xj - x.begin();
                 *yi += (*xj)*(wn^(i*j));
             }
 
@@ -41,10 +42,10 @@ class DFT {
         double argument = (2*M_PI)/N;
         Complex wn(cos(argument), sin(argument));
         for(Vector<Complex>::iterator yi = y.begin(); yi != y.end(); ++yi){
-            size_t i = y.begin() - yi;
+            size_t i = yi - y.begin();
             *yi = Complex();
             for(Vector<Complex>::iterator xj = x.begin(); xj != x.end(); ++xj){
-                size_t j = x.begin() - xj;
+                size_t j = xj - x.begin();
                 *yi += (*xj)*(wn^(i*j));
             }
             *yi /= N;

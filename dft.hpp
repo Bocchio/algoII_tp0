@@ -7,7 +7,7 @@
 #include "vector.hpp"
 #include "complex.hpp"
 
-#define TOLERANCE DBL_EPSILON*200
+#define TOLERANCE DBL_EPSILON*1000
 
 class DFT {
 

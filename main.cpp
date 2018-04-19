@@ -9,6 +9,7 @@
 #include "cmdline.hpp"
 #include "vector.hpp"
 #include "complex.hpp"
+//#include "func_version/dft.hpp"
 #include "dft.hpp"
 
 using std::cout;
@@ -25,32 +26,6 @@ static void opt_output(string const &);
 static void opt_method(string const &);
 static void opt_help(string const &);
 
-// Tabla de opciones de línea de comando. El formato de la tabla
-// consta de un elemento por cada opción a definir. A su vez, en
-// cada entrada de la tabla tendremos:
-//
-// o La primera columna indica si la opción lleva (1) o no (0) un
-//   argumento adicional.
-//
-// o La segunda columna representa el nombre corto de la opción.
-//
-// o Similarmente, la tercera columna determina el nombre largo.
-//
-// o La cuarta columna contiene el valor por defecto a asignarle
-//   a esta opción en caso que no esté explícitamente presente
-//   en la línea de comandos del programa. Si la opción no tiene
-//   argumento (primera columna nula), todo esto no tiene efecto.
-//
-// o La quinta columna apunta al método de parseo de la opción,
-//   cuyo prototipo debe ser siempre void (*m)(string const &arg);
-//
-// o La última columna sirve para especificar el comportamiento a
-//   adoptar en el momento de procesar esta opción: cuando la
-//   opción es obligatoria, deberá activarse OPT_MANDATORY.
-//
-// Además, la última entrada de la tabla debe contener todos sus
-// elementos nulos, para indicar el final de la misma.
-//
 // syntax: {needs argument,
 //          short name,
 //          long name,

@@ -2,8 +2,8 @@
 #define DFT_HPP__
 
 #include <cfloat>  // For DBL_EPSILON
-#include "vector.hpp"
-#include "complex.hpp"
+#include "../vector.hpp"
+#include "../complex.hpp"
 #include "func_utils.hpp"  // Because functional programming is fun
 
 #define TOLERANCE DBL_EPSILON*5

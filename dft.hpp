@@ -20,10 +20,9 @@ class DFT {
         for(Vector<Complex>::iterator yi = y.begin(); yi != y.end(); ++yi){
             size_t i = y.begin() - yi;
             *yi = Complex();
-            Complex wn_ = wn^(i);
             for(Vector<Complex>::iterator xj = x.begin(); xj != x.end(); ++xj){
                 size_t j = x.begin() - xj;
-                *yi += (*xj)*(wn_^j);
+                *yi += (*xj)*(wn^(i*j));
             }
 
             if (std::abs((*yi).getReal()) < TOLERANCE)
@@ -44,10 +43,9 @@ class DFT {
         for(Vector<Complex>::iterator yi = y.begin(); yi != y.end(); ++yi){
             size_t i = y.begin() - yi;
             *yi = Complex();
-            Complex wn_ = wn^(i);
             for(Vector<Complex>::iterator xj = x.begin(); xj != x.end(); ++xj){
                 size_t j = x.begin() - xj;
-                *yi += (*xj)*(wn_^j);
+                *yi += (*xj)*(wn^(i*j));
             }
             *yi /= N;
 

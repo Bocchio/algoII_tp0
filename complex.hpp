@@ -90,6 +90,10 @@ class Complex{
         return Complex(real - r.real, imag - r.imag);
     }
 
+    Complex operator/(double r) {
+        return Complex(real/r, imag/r);
+    }
+
     Complex& operator+=(const Complex& r) {
         real += r.real;
         imag += r.imag;

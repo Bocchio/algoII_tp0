@@ -4,7 +4,7 @@
 #include <cfloat>  // For DBL_EPSILON
 #include "../vector.hpp"
 #include "../complex.hpp"
-#include "func_utils.hpp"  // Because functional programming is fun
+#include "func_utils.hpp"
 
 #define TOLERANCE DBL_EPSILON*20
 

@@ -172,8 +172,7 @@ class Complex{
         if (good) {
             c.real = real;
             c.imag = imag;
-        }
-        else {
+        } else {
             is.clear(std::ios::badbit);
         }
 

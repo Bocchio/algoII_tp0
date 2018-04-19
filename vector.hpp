@@ -3,6 +3,7 @@
 
 #include <cstddef>  // Needed for size_t
 #include <stdexcept>  // For exceptions
+#include <utility>  // For swap
 #include <iostream>  // for stream manipulation
 
 #define SEPARATOR ", "
@@ -125,7 +126,7 @@ class Vector {
     bool operator==(const Vector& r) const {
         if (size != r.size)
             return false;
-        for(size_t i = 0; i < size; ++i)
+        for (size_t i = 0; i < size; ++i)
             if (data[i] != r.data[i])
                 return false;
         return true;

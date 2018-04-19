@@ -9,7 +9,7 @@
 #include "cmdline.hpp"
 #include "vector.hpp"
 #include "complex.hpp"
-//#include "func_version/dft.hpp"
+//  #include "func_version/dft.hpp"
 #include "dft.hpp"
 #include "errors.hpp"
 
@@ -50,8 +50,7 @@ static fstream ifs;
 static fstream ofs;
 
 
-static void opt_input(string const &arg)
-{
+static void opt_input(string const &arg) {
     if (arg == "-") {
         iss = &cin;
     } else {
@@ -68,8 +67,7 @@ static void opt_input(string const &arg)
     }
 }
 
-static void opt_output(string const &arg)
-{
+static void opt_output(string const &arg) {
     if (arg == "-") {
         oss = &cout;
     } else {
@@ -86,32 +84,29 @@ static void opt_output(string const &arg)
     }
 }
 
-static void opt_method(string const &method)
-{
-    if (method == "DFT")
+static void opt_method(string const &method) {
+    if (method == "DFT") {
         transform = DFT::transform;
-    else if (method == "IDFT")
+    } else if (method == "IDFT") {
         transform = DFT::inverse;
-    else {
+    } else {
         cerr << ERROR_MSG_UNKNOWN_METHOD << endl;
         opt_help("");
     }
 }
 
-static void opt_help(string const &arg)
-{
+static void opt_help(string const &arg) {
     cout << HELP_MSG
          << endl;
     exit(0);
 }
 
-int main(int argc, char * const argv[])
-{
+int main(int argc, char * const argv[]) {
     cmdline cmdl(options);
     cmdl.parse(argc, argv);
 
     Vector<Complex> v;
-    if((*iss >> v).bad()){
+    if ((*iss >> v).bad()) {
         cerr << ERROR_MSG_CORRUPTED_DATA << endl;
     }
     *oss << transform(v) << endl;

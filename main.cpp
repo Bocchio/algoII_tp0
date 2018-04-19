@@ -10,7 +10,6 @@
 #include "vector.hpp"
 #include "complex.hpp"
 #include "dft.hpp"
-#include "func_utils.hpp"
 
 using std::cout;
 using std::cin;

@@ -182,6 +182,13 @@ class Vector {
     iterator end() {
         return &data[size];
     }
+    // Const version
+    iterator begin() const {
+        return &data[0];
+    }
+    iterator end() const {
+        return &data[size];
+    }
 };
 
 #endif  // VECTOR_HPP_

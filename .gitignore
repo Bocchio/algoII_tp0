@@ -227,3 +227,6 @@ TSWLatexianTemp*
 
 # ignore .o files
 *.o
+
+*.zip
+ejemplos/

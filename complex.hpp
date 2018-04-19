@@ -109,7 +109,7 @@ class Complex{
     }
 
     Complex operator*(const Complex& r) const {
-        return Complex(r.real*real - imag + r.imag, real*r.imag + imag*r.real);
+        return Complex(real*r.real - imag + r.imag, real*r.imag + imag*r.real);
     }
 
     Complex operator*(double r) const {

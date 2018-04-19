@@ -11,6 +11,7 @@
 //#include "complex.hpp"
 #include "func_version/dft.hpp"
 #include "dft.hpp"
+#include "errors.hpp"
 
 using std::cout;
 using std::cin;
@@ -59,7 +60,7 @@ static void opt_input(string const &arg)
     }
 
     if (!iss->good()) {
-        cerr << "Cannot open "
+        cerr << ERROR_MSJ_CANT_OPEN_FILE
              << arg
              << "."
              << endl;
@@ -77,7 +78,7 @@ static void opt_output(string const &arg)
     }
 
     if (!oss->good()) {
-        cerr << "Cannot open "
+        cerr << ERROR_MSJ_CANT_OPEN_FILE
              << arg
              << "."
              << endl;
@@ -92,14 +93,14 @@ static void opt_method(string const &method)
     else if (method == "IDFT")
         transform = DFT::inverse;
     else {
-        cerr << "Unkown mehotd." << endl;
+        cerr << ERROR_MSJ_UNKNOWN_METHOD << endl;
         opt_help("");
     }
 }
 
 static void opt_help(string const &arg)
 {
-    cout << "cmdline [-i file] [-o file] [-m method]"
+    cout << HELP_MSJ
          << endl;
     exit(0);
 }
@@ -111,7 +112,7 @@ int main(int argc, char * const argv[])
 
     Vector<Complex> v;
     if((*iss >> v).bad()){
-        cerr << "The input data was corrupt." << endl;
+        cerr << ERROR_MSJ_CORRUPTED_DATA << endl;
     }
     *oss << transform(v) << endl;
 

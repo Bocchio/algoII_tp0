@@ -7,7 +7,7 @@ for transformado in "$PATH""T"*; do
     original=$PATH${original:1}
 
     # Check if the DFT works
-    if ./main -i "$original" | ./diff_complex -i2 "$transformado"; then
+    if ./tp0 -i "$original" | ./diff_complex -i2 "$transformado"; then
         :
     else
         errors=$errors+1
@@ -15,7 +15,7 @@ for transformado in "$PATH""T"*; do
     fi
 
     # Check if the IDFT works
-    if ./main -i "$transformado" -m IDFT | ./diff_complex -i2 "$original"; then
+    if ./tp0 -i "$transformado" -m IDFT | ./diff_complex -i2 "$original"; then
         :
     else
         errors=$errors+1
